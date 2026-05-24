@@ -33,6 +33,7 @@ export default function DashboardPage() {
   plan: string;
   word_quota: number;
   word_used: number;
+  word_limit?: number;
 } | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -71,6 +72,7 @@ export default function DashboardPage() {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
@@ -81,9 +83,16 @@ export default function DashboardPage() {
     );
   }
 
+  const planLimits: Record<string, number> = {
+    free: 3000,
+    basic: 25000,
+    pro: 80000,
+    unlimited: -1,
+  };
+
   const quotaPercentage = profile?.plan === "unlimited"
     ? 100
-    : Math.round((profile?.word_quota / profile?.word_limit || 1) * 100);
+    : Math.round(((profile?.word_quota || 0) / (profile?.word_limit || planLimits[profile?.plan || "free"] || 3000)) * 100);
 
   const moduleLabels = {
     writer: "AI Writer",

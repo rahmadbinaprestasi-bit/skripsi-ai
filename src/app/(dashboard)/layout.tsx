@@ -217,6 +217,7 @@ export default function DashboardLayout({
     };
 
     getProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
