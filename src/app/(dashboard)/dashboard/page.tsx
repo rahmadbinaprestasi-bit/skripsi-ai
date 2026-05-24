@@ -183,7 +183,7 @@ export default function DashboardPage() {
             <Badge className={
               profile?.plan === "unlimited"
                 ? "bg-amber-100 text-amber-700"
-                : profile?.word_quota < 500
+                : (profile?.word_quota ?? 0) < 500
                   ? "bg-red-100 text-red-700"
                   : "bg-green-100 text-green-700"
             }>
@@ -193,7 +193,7 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <Progress value={100 - quotaPercentage} className="h-3" />
-          {profile?.word_quota < 500 && profile?.plan !== "unlimited" && (
+          {(profile?.word_quota ?? 0) < 500 && profile?.plan !== "unlimited" && (
             <div className="mt-4 p-4 rounded-lg bg-red-50 border border-red-200">
               <p className="text-red-700 text-sm font-medium">
                 Kuota Anda hampir habis!{" "}

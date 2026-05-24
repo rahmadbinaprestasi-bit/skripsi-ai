@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -21,7 +21,7 @@ function isPublicRoute(pathname: string): boolean {
 }
 
 // Check if user is admin
-async function isAdmin(supabase: ReturnType<typeof createClient>): Promise<boolean> {
+async function isAdmin(supabase: Awaited<ReturnType<typeof createServerClient>>): Promise<boolean> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return false;
 
@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Create Supabase client for this request
-  const supabase = createClient(
+  const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {

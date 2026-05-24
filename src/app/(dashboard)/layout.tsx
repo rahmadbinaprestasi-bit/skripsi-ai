@@ -247,7 +247,7 @@ export default function DashboardLayout({
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 md:hidden">
             <Sheet>
-              <SheetTrigger asChild>
+              <SheetTrigger>
                 <Button variant="ghost" size="icon">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -301,7 +301,7 @@ export default function DashboardLayout({
 
             {/* User Menu */}
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger>
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-primary text-white text-sm">
@@ -318,10 +318,10 @@ export default function DashboardLayout({
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem>
                   <Link href="/subscription">Berlangganan</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem>
                   <Link href="/settings">Pengaturan</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
