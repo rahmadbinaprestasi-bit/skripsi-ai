@@ -61,8 +61,9 @@ export default function RegisterPage() {
       if (data.user) {
         router.push("/login?registered=true");
       }
-    } catch (err: any) {
-      setError(err.message || "Terjadi kesalahan saat mendaftar");
+    } catch (err) {
+      const error = err as { message?: string };
+      setError(error.message || "Terjadi kesalahan saat mendaftar");
     } finally {
       setIsLoading(false);
     }

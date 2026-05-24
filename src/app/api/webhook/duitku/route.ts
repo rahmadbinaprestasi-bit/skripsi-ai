@@ -1,5 +1,4 @@
 import { createServiceClient } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
 import { verifyWebhookSignature } from "@/lib/duitku";
 
 export async function POST(req: Request) {
@@ -100,7 +99,7 @@ export async function POST(req: Request) {
     }
 
     return new Response("OK", { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Webhook Error:", error);
     return new Response("Internal error", { status: 500 });
   }

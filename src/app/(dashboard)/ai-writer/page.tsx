@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,17 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 
 interface Profile {
   word_quota: number;
@@ -43,7 +34,6 @@ export default function AIWriterPage() {
   const supabase = createClient();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
   const [generating, setGenerating] = useState(false);
 
@@ -59,8 +49,7 @@ export default function AIWriterPage() {
   const [userPrompt, setUserPrompt] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
-  // Fetch profile on mount
-  useState(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -73,12 +62,7 @@ export default function AIWriterPage() {
       }
     };
     fetchProfile();
-  });
-
-  const handleTemplateSelect = (templateId: string) => {
-    setSelectedTemplate(templateId);
-    setContext({ ...context, chapter: templateId });
-  };
+  }, [supabase]);
 
   const handleGenerate = async () => {
     if (!profile || profile.word_quota <= 0) {
@@ -87,10 +71,8 @@ export default function AIWriterPage() {
     }
 
     setGenerating(true);
-    setLoading(true);
 
     try {
-      // Call the generate API
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -110,17 +92,16 @@ export default function AIWriterPage() {
       setOutput(data.content);
       setStep(5);
 
-      // Refresh profile to update quota
       const { data: updatedProfile } = await supabase
         .from("profiles")
         .select("word_quota, word_used, plan")
         .eq("id", (await supabase.auth.getUser()).data.user?.id)
         .single();
       setProfile(updatedProfile as Profile);
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as { message?: string };
       alert(error.message);
     } finally {
-      setLoading(false);
       setGenerating(false);
     }
   };
@@ -145,13 +126,11 @@ export default function AIWriterPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
       <div>
         <h1 className="font-heading text-2xl font-bold text-slate-900">AI Writer</h1>
         <p className="text-slate-600">Generate bab skripsi dengan pipeline anti-deteksi 3 tahap</p>
       </div>
 
-      {/* Progress Steps */}
       <div className="flex items-center justify-between">
         {[1, 2, 3, 4, 5].map((s) => (
           <div key={s} className="flex items-center">
@@ -178,7 +157,6 @@ export default function AIWriterPage() {
 
       <Separator />
 
-      {/* Step Content */}
       {step === 1 && (
         <Card>
           <CardHeader>
@@ -221,7 +199,10 @@ export default function AIWriterPage() {
                 <select
                   className="w-full px-3 py-2 rounded-lg border bg-white"
                   value={context.chapter}
-                  onChange={(e) => setContext({ ...context, chapter: e.target.value })}
+                  onChange={(e) => {
+                    setContext({ ...context, chapter: e.target.value });
+                    setSelectedTemplate(e.target.value);
+                  }}
                 >
                   <option value="">Pilih bab...</option>
                   {templates.map((t) => (
@@ -251,11 +232,12 @@ export default function AIWriterPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="methodology">Jenis Penelitian</Label>
+              <Label>Jenis Penelitian</Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {["Kuantitatif", "Kualitatif", "Mix Method", "Deskriptif"].map((m) => (
                   <button
                     key={m}
+                    type="button"
                     onClick={() => setContext({ ...context, methodology: m })}
                     className={`p-3 rounded-lg border text-sm font-medium transition-colors ${
                       context.methodology === m
@@ -297,10 +279,10 @@ export default function AIWriterPage() {
             <div className="p-4 rounded-lg bg-slate-50 border">
               <h4 className="font-semibold mb-2">{context.chapter || "Pendahuluan"}</h4>
               <ul className="space-y-2 text-sm text-slate-600">
-                <li>• Latar Belakang Masalah</li>
-                <li>• Rumusan Masalah</li>
-                <li>• Tujuan Penelitian</li>
-                <li>• Manfaat Penelitian</li>
+                <li>&bull; Latar Belakang Masalah</li>
+                <li>&bull; Rumusan Masalah</li>
+                <li>&bull; Tujuan Penelitian</li>
+                <li>&bull; Manfaat Penelitian</li>
               </ul>
             </div>
             <div className="space-y-2">
@@ -361,6 +343,7 @@ export default function AIWriterPage() {
             <p className="text-center text-sm text-slate-500">
               Mohon tunggu, proses ini membutuhkan waktu beberapa detik...
             </p>
+            {profile && <Button onClick={handleGenerate} className="w-full">Mulai Generate</Button>}
           </CardContent>
         </Card>
       )}
@@ -393,7 +376,6 @@ export default function AIWriterPage() {
             </CardContent>
           </Card>
 
-          {/* Highlight sections for user customization */}
           <Card className="border-amber-200 bg-amber-50">
             <CardContent className="pt-6">
               <h4 className="font-semibold text-amber-800 mb-2">⚠️ Bagian yang Perlu Diedit</h4>
@@ -420,7 +402,6 @@ export default function AIWriterPage() {
         </div>
       )}
 
-      {/* Quota Warning */}
       {profile && profile.word_quota < 500 && (
         <Card className="border-red-200 bg-red-50">
           <CardContent className="pt-6">

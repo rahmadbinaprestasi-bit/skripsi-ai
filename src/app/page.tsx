@@ -54,7 +54,7 @@ export default function HomePage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-            Atasi writer's block. Hasilkan draf skripsi, esai, artikel berkualitas dalam menit, bukan berbulan-bulan.
+            Atasi writer&apos;s block. Hasilkan draf skripsi, esai, artikel berkualitas dalam menit, bukan berbulan-bulan.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">

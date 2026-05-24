@@ -29,8 +29,9 @@ export default function ForgotPasswordPage() {
       if (resetError) throw resetError;
 
       setSent(true);
-    } catch (err: any) {
-      setError(err.message || "Terjadi kesalahan");
+    } catch (err) {
+      const error = err as { message?: string };
+      setError(error.message || "Terjadi kesalahan");
     } finally {
       setIsLoading(false);
     }

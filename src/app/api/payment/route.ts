@@ -85,10 +85,11 @@ export async function POST(req: Request) {
       paymentUrl: invoice.paymentUrl || invoice.payment_url,
       merchantOrderId,
     });
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as { message?: string };
     console.error("Payment API Error:", error);
     return NextResponse.json(
-      { error: error.message || "Terjadi kesalahan saat membuat pembayaran" },
+      { error: err.message || "Terjadi kesalahan saat membuat pembayaran" },
       { status: 500 }
     );
   }

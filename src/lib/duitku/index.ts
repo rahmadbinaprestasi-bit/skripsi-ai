@@ -98,8 +98,10 @@ export function generateMerchantOrderId(userId: string): string {
   return `SKR-${userId.slice(0, 8)}-${Date.now()}`;
 }
 
-export default {
+const duitkuModule = {
   createInvoice,
   verifyWebhookSignature,
   generateMerchantOrderId,
 };
+
+export default duitkuModule;

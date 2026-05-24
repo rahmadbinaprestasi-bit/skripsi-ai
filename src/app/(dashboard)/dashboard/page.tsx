@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 
 interface Document {
   id: string;
@@ -28,7 +27,13 @@ export default function DashboardPage() {
   const supabase = createClient();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<{
+  full_name: string | null;
+  email: string;
+  plan: string;
+  word_quota: number;
+  word_used: number;
+} | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

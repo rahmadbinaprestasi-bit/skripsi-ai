@@ -54,3 +54,4 @@ logs
 
 # Docs memory (local only)
 /docs/memory/*.md
+.env*.local

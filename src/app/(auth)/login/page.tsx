@@ -46,8 +46,9 @@ export default function LoginPage() {
         router.push(redirectTo);
         router.refresh();
       }
-    } catch (err: any) {
-      setError(err.message || "Email atau password salah");
+    } catch (err) {
+      const error = err as { message?: string };
+      setError(error.message || "Email atau password salah");
     } finally {
       setIsLoading(false);
     }

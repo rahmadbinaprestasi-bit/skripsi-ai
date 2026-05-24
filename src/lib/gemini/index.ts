@@ -104,8 +104,6 @@ export async function executeAntiDetectionPipeline(
   userPrompt: string,
   context: PipelineContext
 ): Promise<{ finalText: string; tokensUsed: number }> {
-  const startTime = Date.now();
-
   // Stage 1: Logika
   const points = await stage1Logic(context, userPrompt);
 
@@ -115,16 +113,17 @@ export async function executeAntiDetectionPipeline(
   // Stage 3: Humanisasi
   const finalText = await stage3Humanize(draft, context);
 
-  const endTime = Date.now();
-  const tokensUsed = Math.round((finalText.split(" ").length) * 1.5); // Estimate
+  const tokensUsed = Math.round((finalText.split(" ").length) * 1.5);
 
   return { finalText, tokensUsed };
 }
 
-export default {
+const geminiModule = {
   generateContent,
   stage1Logic,
   stage2Restructure,
   stage3Humanize,
   executeAntiDetectionPipeline,
 };
+
+export default geminiModule;

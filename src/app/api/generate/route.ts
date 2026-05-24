@@ -78,10 +78,11 @@ export async function POST(req: Request) {
       wordsUsed: wordCount,
       totalWords: words.length,
     });
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as { message?: string };
     console.error("Generate API Error:", error);
     return NextResponse.json(
-      { error: error.message || "Terjadi kesalahan saat generate" },
+      { error: err.message || "Terjadi kesalahan saat generate" },
       { status: 500 }
     );
   }
